@@ -18,7 +18,8 @@ proj4string(e) = CRS(projection)
 
 #process Planet data
 #stack time series Planet data. Must have same projection and extent.
-planet.dir = dir("", full.names = T)
+planet.data = "/Users/danplekhov/Desktop/SAA2018/GIS/Gay City/merged"
+planet.dir = dir(planet.data, pattern = ".tif$", full.names = T)
 planet = lapply(planet.dir, stack)
 
 #NDVI
@@ -39,7 +40,7 @@ for (i in 1:length(ndvi)){
 ndvi = stack(ndvi)
 
 ###Analysis
-dates = unique(substr(basename(dir("merged/")), 1, 8))
+dates = unique(substr(basename(dir(planet.data)), 1, 8))
 dates = paste0(substr(dates, 5,6), "/", substr(dates, 7,8))
 
 #import stone wall polygons and use to mask NDVI images
@@ -86,11 +87,10 @@ spectra$Location = factor(spectra$Location,
 table(spectra$Date, spectra$Location)
 
 #Box plot figure
-ggboxplot(spectra, x = "Date", y = "NDVI", color = "Location", 
-          palette = c("pink", "light blue"))
+ggboxplot(spectra, x = "Date", y = "NDVI", fill = "Location", palette = c("grey","white"))
 
 #Line plot figure
-ggline(spectra, x = "Date", y = "NDVI", color = "Location", palette = c("pink", "light blue"), plot_type = "l",
+ggline(spectra, x = "Date", y = "NDVI", color = "Location", palette = c("black", "grey"), plot_type = "l",
                     add = "mean_ci")
 
 
